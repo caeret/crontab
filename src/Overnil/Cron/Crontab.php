@@ -2,7 +2,6 @@
 
 namespace Overnil\Cron;
 
-
 use Overnil\EventLoop\Factory;
 use Psr\Log\LoggerInterface;
 use React\EventLoop\LoopInterface;
@@ -12,28 +11,28 @@ class Crontab
 
     /**
      * The crontab logger.
-     * 
+     *
      * @var LoggerInterface
      */
     private $logger;
 
     /**
      * The event loop instance.
-     * 
+     *
      * @var LoopInterface
      */
     private $loop;
 
     /**
      * The crontab tasks.
-     * 
+     *
      * @var Task[]
      */
     private $tasks = [];
 
     /**
      * Crontab constructor.
-     * 
+     *
      * @param LoggerInterface $logger
      * @param LoopInterface|null $loop
      */
@@ -49,7 +48,7 @@ class Crontab
 
     /**
      * Add a task to the crontab.
-     * 
+     *
      * @param Task $task
      * @return $this
      */
@@ -62,7 +61,7 @@ class Crontab
 
     /**
      * Add tasks to the crontab.
-     * 
+     *
      * @param Task[] $tasks
      * @return $this
      */
@@ -76,7 +75,7 @@ class Crontab
 
     /**
      * Remove a task by the given name.
-     * 
+     *
      * @param string $name
      * @return null|Task
      */
@@ -94,7 +93,7 @@ class Crontab
 
     /**
      * Remove tasks by the given names.
-     * 
+     *
      * @param array $names
      * @return Task[]
      */
@@ -111,14 +110,14 @@ class Crontab
 
     /**
      * Run the crontab using the given interval.
-     * 
+     *
      * @param int $interval
      */
     public function run($interval = 60)
     {
         $this->logger->info("added crontab timer.");
         $this->loop->addPeriodicTimer($interval, function () use ($interval) {
-            $this->loop->addTimer($interval - time() % $interval, function() {
+            $this->loop->addTimer($interval - time() % $interval, function () {
                 foreach ($this->tasks as $task) {
                     if ($task->isDue()) {
                         $pid = pcntl_fork();
@@ -151,5 +150,4 @@ class Crontab
     {
         $this->loop->stop();
     }
-
 }

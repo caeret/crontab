@@ -1,4 +1,14 @@
 {
+    "name": "overnil/crontab",
+    "description": "Another crontab based on React PHP event loop.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "overnil",
+            "email": "me@overnil.com"
+        }
+    ],
     "require": {
         "symfony/process": "^3.0",
         "overnil/event-loop": "^0.0.3",

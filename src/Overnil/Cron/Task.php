@@ -2,7 +2,6 @@
 
 namespace Overnil\Cron;
 
-
 use Cron\CronExpression;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Process;
@@ -54,14 +53,14 @@ class Task
 
     /**
      * The cron expression.
-     * 
+     *
      * @var CronExpression
      */
     private $_cronExpression;
 
     /**
      * Task constructor.
-     * 
+     *
      * @param string $name
      * @param string $expression
      * @param string $command
@@ -81,7 +80,7 @@ class Task
 
     /**
      * Get the CronExpression instance by the task expression.
-     * 
+     *
      * @return CronExpression
      */
     private function getCronExpression()
@@ -94,7 +93,7 @@ class Task
 
     /**
      * Check if the task should be executed.
-     * 
+     *
      * @param string $now
      * @return bool
      */
@@ -105,7 +104,7 @@ class Task
 
     /**
      * Run the task.
-     * 
+     *
      * @return bool
      */
     public function run()
@@ -126,7 +125,7 @@ class Task
 
     /**
      * Get the log context.
-     * 
+     *
      * @return array
      */
     private function getLogContext()
@@ -141,12 +140,11 @@ class Task
 
     /**
      * Get the task name.
-     * 
+     *
      * @return string
      */
     public function getName()
     {
         return $this->name;
     }
-    
 }
