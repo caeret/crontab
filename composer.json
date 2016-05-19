@@ -1,0 +1,13 @@
+{
+    "require": {
+        "symfony/process": "^3.0",
+        "overnil/event-loop": "^0.0.3",
+        "psr/log": "^1.0",
+        "mtdowling/cron-expression": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    }
+}
