@@ -10,17 +10,33 @@ use React\EventLoop\LoopInterface;
 class Crontab
 {
 
+    /**
+     * The crontab logger.
+     * 
+     * @var LoggerInterface
+     */
     private $logger;
 
+    /**
+     * The event loop instance.
+     * 
+     * @var LoopInterface
+     */
     private $loop;
 
-    private $interval = 60;
-
     /**
+     * The crontab tasks.
+     * 
      * @var Task[]
      */
     private $tasks = [];
 
+    /**
+     * Crontab constructor.
+     * 
+     * @param LoggerInterface $logger
+     * @param LoopInterface|null $loop
+     */
     public function __construct(LoggerInterface $logger, LoopInterface $loop = null)
     {
         $this->logger = $logger;
@@ -31,12 +47,25 @@ class Crontab
         $this->timers = new \SplObjectStorage();
     }
 
+    /**
+     * Add a task to the crontab.
+     * 
+     * @param Task $task
+     * @return $this
+     */
     public function addTask(Task $task)
     {
+        $this->logger->info("added task \"{$task->getName()}\".");
         $this->tasks[$task->getName()] = $task;
         return $this;
     }
 
+    /**
+     * Add tasks to the crontab.
+     * 
+     * @param Task[] $tasks
+     * @return $this
+     */
     public function addTasks(array $tasks)
     {
         foreach ($tasks as $task) {
@@ -45,16 +74,30 @@ class Crontab
         return $this;
     }
 
+    /**
+     * Remove a task by the given name.
+     * 
+     * @param string $name
+     * @return null|Task
+     */
     public function removeTask($name)
     {
         if (isset($this->tasks[$name])) {
+            $this->logger->info("removed task \"{$name}\".");
             $task = $this->tasks[$name];
             unset($this->tasks[$name]);
             return $task;
         }
+        $this->logger->info("unable to remove task \"{$name}\": task does not exist.");
         return null;
     }
 
+    /**
+     * Remove tasks by the given names.
+     * 
+     * @param array $names
+     * @return Task[]
+     */
     public function removeTasks(array $names)
     {
         $tasks = [];
@@ -66,12 +109,18 @@ class Crontab
         return $tasks;
     }
 
-    public function run()
+    /**
+     * Run the crontab using the given interval.
+     * 
+     * @param int $interval
+     */
+    public function run($interval = 60)
     {
-        $this->loop->addPeriodicTimer($this->interval, function () {
-            $this->loop->addTimer($this->interval - time() % $this->interval, function() {
+        $this->logger->info("added crontab timer.");
+        $this->loop->addPeriodicTimer($interval, function () use ($interval) {
+            $this->loop->addTimer($interval - time() % $interval, function() {
                 foreach ($this->tasks as $task) {
-                    if ($task->needRun()) {
+                    if ($task->isDue()) {
                         $pid = pcntl_fork();
                         if ($pid > 0) {
                             continue;
@@ -85,14 +134,22 @@ class Crontab
                 }
             });
         });
-        
-        $this->loop->addPeriodicTimer($this->interval, function () {
+
+        $this->logger->info("added task process receiving timer.");
+        $this->loop->addPeriodicTimer($interval, function () use ($interval) {
             while ($pid = pcntl_waitpid(0, $status, WNOHANG) > 0) {
                 $this->logger->info("task process exit: [{$pid}]{$status}.");
             }
         });
 
+        $after = $interval + time() % $interval;
+        $this->logger->info("crontab will run with interval {$interval}s after {$after}s.");
         $this->loop->run();
+    }
+
+    public function stop()
+    {
+        $this->loop->stop();
     }
 
 }

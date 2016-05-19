@@ -79,6 +79,11 @@ class Task
         $this->timeout = (int)$timeout;
     }
 
+    /**
+     * Get the CronExpression instance by the task expression.
+     * 
+     * @return CronExpression
+     */
     private function getCronExpression()
     {
         if (!isset($this->_cronExpression)) {
@@ -87,11 +92,22 @@ class Task
         return $this->_cronExpression;
     }
 
-    public function needRun($now = 'now')
+    /**
+     * Check if the task should be executed.
+     * 
+     * @param string $now
+     * @return bool
+     */
+    public function isDue($now = 'now')
     {
         return $this->getCronExpression()->isDue($now);
     }
 
+    /**
+     * Run the task.
+     * 
+     * @return bool
+     */
     public function run()
     {
         $process = new Process($this->command);
@@ -108,6 +124,11 @@ class Task
         return $process->isSuccessful();
     }
 
+    /**
+     * Get the log context.
+     * 
+     * @return array
+     */
     private function getLogContext()
     {
         return [
@@ -119,6 +140,8 @@ class Task
     }
 
     /**
+     * Get the task name.
+     * 
      * @return string
      */
     public function getName()
