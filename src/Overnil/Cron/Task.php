@@ -52,6 +52,20 @@ class Task
     private $timeout;
 
     /**
+     * The success callable.
+     * 
+     * @var callable
+     */
+    private $success;
+    
+    /**
+     * The failure callable.
+     * 
+     * @var callable
+     */
+    private $failure;
+
+    /**
      * The cron expression.
      *
      * @var CronExpression
@@ -76,6 +90,20 @@ class Task
         $this->out = $out;
         $this->err = $err;
         $this->timeout = (int)$timeout;
+    }
+
+    /**
+     * Set the task callback.
+     * 
+     * @param callable|null $success
+     * @param callable|null $failure
+     * @return $this
+     */
+    public function setCallback($success, $failure)
+    {
+        $this->success = $success;
+        $this->failure = $failure;
+        return $this;
     }
 
     /**
@@ -119,8 +147,15 @@ class Task
         } else {
             $this->err->error("{$prefix}\n{$process->getErrorOutput()}", $this->getLogContext());
         }
+        $ret = $process->isSuccessful();
+        if ($ret && $this->success) {
+            call_user_func($this->success, $this);
+        }
+        if (!$ret && $this->failure) {
+            call_user_func($this->failure, $this);
+        }
 
-        return $process->isSuccessful();
+        return $ret;
     }
 
     /**
