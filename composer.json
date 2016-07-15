@@ -11,9 +11,9 @@
     ],
     "require": {
         "symfony/process": "^3.0",
-        "overnil/event-loop": "^0.0.3",
         "psr/log": "^1.0",
-        "mtdowling/cron-expression": "^1.1"
+        "mtdowling/cron-expression": "^1.1",
+        "react/event-loop": "^0.4.2"
     },
     "autoload": {
         "psr-4": {

@@ -2,7 +2,7 @@
 
 namespace Overnil\Cron;
 
-use Overnil\EventLoop\Factory;
+use React\EventLoop\Factory;
 use Psr\Log\LoggerInterface;
 use React\EventLoop\LoopInterface;
 
@@ -55,6 +55,9 @@ class Crontab
     public function addTask(Task $task)
     {
         $this->logger->info("added task \"{$task->getName()}\".");
+        if (isset($this->tasks[$task->getName()])) {
+            throw new \InvalidArgumentException("Task with name \"{$task->getName()}\" is exist.");
+        }
         $this->tasks[$task->getName()] = $task;
         return $this;
     }
