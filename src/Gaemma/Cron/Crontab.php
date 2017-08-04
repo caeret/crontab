@@ -1,6 +1,6 @@
 <?php
 
-namespace Overnil\Cron;
+namespace Gaemma\Cron;
 
 use React\EventLoop\Factory;
 use Psr\Log\LoggerInterface;

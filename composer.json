@@ -1,12 +1,12 @@
 {
-    "name": "overnil/crontab",
+    "name": "gaemma/crontab",
     "description": "Another crontab based on React PHP event loop.",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "overnil",
-            "email": "me@overnil.com"
+            "name": "gaemma",
+            "email": "me@gaemma.com"
         }
     ],
     "require": {

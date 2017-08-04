@@ -1,6 +1,6 @@
 <?php
 
-namespace Overnil\Cron;
+namespace Gaemma\Cron;
 
 use Cron\CronExpression;
 use Psr\Log\LoggerInterface;
